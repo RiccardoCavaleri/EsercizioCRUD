@@ -3,6 +3,7 @@ package com.example.demo_3.controllers;
 import com.example.demo_3.entities.Car;
 import com.example.demo_3.services.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +21,21 @@ public class CarController {
          return ResponseEntity.ok(carService.insertCar(newCar));
     }
 
-    //metodo get(per visualizzare la lista di auto)
+    //metodo get(per visualizzare tutte le auto)
     @GetMapping("/showAll")
     public ResponseEntity<List<Car>> showCar(){
         return ResponseEntity.ok(carService.selectAllCars());
+    }
+
+    //Metodo get per visualizzare un auto by id
+    @GetMapping("/showOneCar")
+    public ResponseEntity<Car> showCarById(@PathVariable Long id){
+        Car car = carService.selectCarsById(id);
+        if (car != null){
+            return ResponseEntity.ok(car);
+        }else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     //metodo update(per aggiornare un auto by id)
@@ -36,18 +48,18 @@ public class CarController {
             Car carUpdated = carService.updateCar(id, newType);
             return ResponseEntity.ok(carUpdated);
         }else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     //metodo delete per id
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteCar(Long id){
+    public ResponseEntity<Void> deleteCar(@PathVariable Long id){
         boolean isDeleted = carService.deleteCar(id);
         if (isDeleted){
             return ResponseEntity.ok().build();
         }else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
@@ -55,6 +67,6 @@ public class CarController {
     @DeleteMapping("/all/deleted")
     public ResponseEntity<Void> deleteAllCars(){
         carService.deleteAllCars();
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 }

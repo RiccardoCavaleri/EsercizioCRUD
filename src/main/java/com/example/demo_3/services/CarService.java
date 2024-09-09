@@ -14,7 +14,7 @@ public class CarService {
 
     //metodo per inserire e salvare una macchina
     public Car insertCar(Car newCar) {
-        return carRepository.saveAndFlush(newCar);
+        return carRepository.save(newCar);
     }
 
     //metodo select all
@@ -36,7 +36,7 @@ public class CarService {
         if (carRepository.existsById(id)) {
             Car car = carRepository.findById(id).get();
             car.setType(newType);
-            return carRepository.saveAndFlush(car);
+            return carRepository.save(car);
         } else {
             return new Car();
         }
